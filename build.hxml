@@ -1,0 +1,4 @@
+-cp src
+-main SnekkyDecompiler
+-cpp cpp
+-D HXCPP_M64
