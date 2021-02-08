@@ -19,7 +19,7 @@ class IndexAssignNode extends Node {
         if (Std.is(index, StringNode)) {
             final cIndex = cast(index, StringNode).value;
 
-            if (!Keyword.isKeyword(cIndex)) {
+            if (!Keyword.isKeyword(cIndex) && ~/^[a-zA-Z]+$/.match(cIndex)) {
                 return '$target.$cIndex = $value;\r\n';
             }
         } 

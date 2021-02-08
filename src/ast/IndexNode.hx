@@ -1,5 +1,6 @@
 package ast;
 
+import code.Keyword;
 import ast.datatypes.StringNode;
 
 class IndexNode extends Node {
@@ -13,11 +14,14 @@ class IndexNode extends Node {
     }
 
     override function toString():String {
-        return if (Std.is(index, StringNode)) {
+        if (Std.is(index, StringNode)) {
             final cIndex = cast(index, StringNode).value;
-            '$target.$cIndex';
-        } else {
-            '$target[$index]';    
+
+            if (!Keyword.isKeyword(cIndex) && ~/^[a-zA-Z]+$/.match(cIndex)) {
+                return '$target.$cIndex';
+            }
         }
+
+        return '$target[$index]';    
     }
 }

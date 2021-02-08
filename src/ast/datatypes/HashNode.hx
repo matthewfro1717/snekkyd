@@ -18,7 +18,7 @@ class HashNode extends Node {
         final iterator = new MapKeyValueIterator(values);
         for (k => v in iterator) {
             final key = cast(k, StringNode);
-            if (!StringTools.contains(key.value, " ") && !Keyword.isKeyword(key.value)) {
+            if (~/^[a-zA-Z]+$/.match(key.value) && !Keyword.isKeyword(key.value)) {
                 s.add(key.value);
             } else {
                 s.add(k.toString());
