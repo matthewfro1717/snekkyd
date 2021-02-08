@@ -266,10 +266,11 @@ class Decompiler {
 
 				currentBlock.addNode(new IndexAssignNode(target, index, value));
 			case OpCode.Array:
+                final length = getInt32();
                 final arrayValues:Array<Node> = [];
                 stack.add(new ArrayNode(arrayValues));
 
-                while (!stack.isEmpty()) {
+                while (arrayValues.length < length) {
                     if (instructions.get(pc) == OpCode.StoreIndex) {
                         pc++;
                         final value = stack.pop();
@@ -286,10 +287,11 @@ class Decompiler {
 
 				currentBlock.addNode(new ReturnNode(returnValue));
 			case OpCode.Hash:
+                final length = getInt32();
                 final hashValues:Map<Node, Node> = [];
                 stack.add(new HashNode(hashValues));
 
-                while (!stack.isEmpty()) {
+                while (Lambda.count(hashValues) < length) {
                     if (instructions.get(pc) == OpCode.StoreIndex) {
                         pc++;
                         final value = stack.pop();
