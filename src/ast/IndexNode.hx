@@ -1,5 +1,7 @@
 package ast;
 
+import ast.datatypes.StringNode;
+
 class IndexNode extends Node {
 
     public final target:Node;
@@ -11,6 +13,11 @@ class IndexNode extends Node {
     }
 
     override function toString():String {
-        return '$target[$index]';
+        return if (Std.is(index, StringNode)) {
+            final cIndex = cast(index, StringNode).value;
+            '$target.$cIndex';
+        } else {
+            '$target[$index]';    
+        }
     }
 }
