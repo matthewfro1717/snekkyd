@@ -89,6 +89,8 @@ class Decompiler {
 		pc++;
 
 		switch (opCode) {
+            case OpCode.Duplicate:
+                stack.add(stack.first());
 			case OpCode.Constant:
 				final constantIndex = getInt32();
 				final constant = switch (constantPool[constantIndex]) {
@@ -264,30 +266,41 @@ class Decompiler {
 
 				currentBlock.addNode(new IndexAssignNode(target, index, value));
 			case OpCode.Array:
-				final arrayLength = getInt32();
-				final arrayValues:Array<Node> = [];
+                final arrayValues:Array<Node> = [];
+                stack.add(new ArrayNode(arrayValues));
 
-				for (_ in 0...arrayLength) {
-					arrayValues.unshift(stack.pop());
-				}
+                while (!stack.isEmpty()) {
+                    if (instructions.get(pc) == OpCode.StoreIndex) {
+                        pc++;
+                        final value = stack.pop();
+                        stack.pop();
+                        stack.pop();
 
-				stack.add(new ArrayNode(arrayValues));
+                        arrayValues.push(value);
+                    } else {
+                        handleInstruction();
+                    }
+                }
 			case OpCode.Return:
 				final returnValue = stack.pop();
 
 				currentBlock.addNode(new ReturnNode(returnValue));
 			case OpCode.Hash:
-				final hashLength = getInt32();
-				final hashValues:Map<Node, Node> = new Map();
+                final hashValues:Map<Node, Node> = [];
+                stack.add(new HashNode(hashValues));
 
-				for (_ in 0...hashLength) {
-					final value = stack.pop();
-					final key = stack.pop();
+                while (!stack.isEmpty()) {
+                    if (instructions.get(pc) == OpCode.StoreIndex) {
+                        pc++;
+                        final value = stack.pop();
+                        final index = stack.pop();
+                        stack.pop();
 
-					hashValues.set(key, value);
-				}
-
-				stack.add(new HashNode(hashValues));
+                        hashValues.set(index, value);
+                    } else {
+                        handleInstruction();
+                    }
+                }
 			case OpCode.Jump:
 				final jumpPos = getInt32();
 
@@ -357,7 +370,7 @@ class Decompiler {
 							currentBlock = oBlock;
 							currentBlock = block.parent;
 
-							if (instructions.get(jumpIndex) == OpCode.Store || instructions.get(jumpIndex) == OpCode.Return) {
+							if (instructions.get(jumpIndex) == OpCode.Store || instructions.get(jumpIndex) == OpCode.Return || instructions.get(pc) == OpCode.StoreIndex) {
 								stack.add(new IfNode(condition, block, alternative));
 							} else {
 								currentBlock.addNode(new IfNode(condition, block, alternative));
