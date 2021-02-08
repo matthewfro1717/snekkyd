@@ -6,7 +6,7 @@ private typedef FileNameEntry = {start:Int, end:Int, fileName:String};
 
 class FileNameTable {
 
-    final table:Array<FileNameEntry> = [];
+    public final table:Array<FileNameEntry> = [];
 
     public function new() {}
 

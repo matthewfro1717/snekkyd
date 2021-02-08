@@ -1,4 +1,5 @@
 cpp/
+out/
 input.bite
 input.snek
 decompiled.snek

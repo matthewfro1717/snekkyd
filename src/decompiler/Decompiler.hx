@@ -1,5 +1,9 @@
 package decompiler;
 
+import haxe.ds.StringMap;
+import haxe.io.Path;
+import sys.io.File;
+import sys.FileSystem;
 import std.BuiltInTable;
 import object.Object;
 import ast.*;
@@ -24,7 +28,8 @@ class Decompiler {
 	final instructions:Bytes;
 	final variableNames:Array<String> = [];
 	final fileInfo:Array<String> = [];
-	var currentBlock = new BlockNode(null);
+	var currentBlock:BlockNode;
+    final blocks:StringMap<BlockNode> = new StringMap();
 	var opCode:Int;
 	var pc = 0;
 
@@ -46,12 +51,30 @@ class Decompiler {
 		instructions = byteCode.read(byteCode.readInt32());
 	}
 
-	public function decompile():String {
-		while (pc < instructions.length) {
+	public function decompile(outDir:String) {
+        var lastFileName:String = fileNameTable.resolve(pc);
+
+        while (pc < instructions.length) {
+            final fileName = fileNameTable.resolve(pc);
+
+            if (!blocks.exists(fileName)) {
+                blocks.set(fileName, new BlockNode(null));
+            }
+
+            currentBlock = blocks.get(fileName);
+
+            if (lastFileName != fileName) {
+                currentBlock.addNode(new ImportNode(Path.withoutExtension(lastFileName)));
+                lastFileName = fileName;
+            }
+
 			handleInstruction();
 		}
 
-		return currentBlock.toString();
+        for (fileName => content in blocks) {
+            FileSystem.createDirectory('$outDir/${Path.directory(fileName)}');
+            File.saveContent('$outDir/$fileName', content.toString());
+        }
 	}
 
 	function getInt32():Int {

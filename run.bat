@@ -1,1 +1,1 @@
-haxe -cp src --main SnekkyDecompiler --run SnekkyDecompiler input.bite
+haxe -cp src --main SnekkyDecompiler --run SnekkyDecompiler input.bite out
