@@ -208,12 +208,7 @@ class Decompiler {
 				final right = stack.pop();
 				final left = stack.pop();
 
-				if (instructions.get(pc) == OpCode.Not) {
-                    pc++;
-					stack.add(new NotEqualsNode(left, right));
-				} else {
-					stack.add(new EqualsNode(left, right));
-				}
+				stack.add(new EqualsNode(left, right));
 			case OpCode.Negate:
 				final right = stack.pop();
 
@@ -345,6 +340,7 @@ class Decompiler {
 
 				final block = new BlockNode(currentBlock);
 				final oStackSize = Lambda.count(stack);
+                var putOnStack = false;
 
 				currentBlock = block;
 				while (pc < jumpIndex) {
@@ -355,6 +351,7 @@ class Decompiler {
 						if (jumpIndex >= pc) { // IF
 							if (oStackSize < Lambda.count(stack)) {
 								currentBlock.addNode(stack.pop());
+                                putOnStack = true;
 							}
 
                             final oBlock = currentBlock;
@@ -367,12 +364,13 @@ class Decompiler {
 
 							if (oStackSize < Lambda.count(stack)) {
 								currentBlock.addNode(stack.pop());
+                                putOnStack = true;
 							}
 
 							currentBlock = oBlock;
 							currentBlock = block.parent;
 
-							if (instructions.get(jumpIndex) == OpCode.Store || instructions.get(jumpIndex) == OpCode.Return || instructions.get(pc) == OpCode.StoreIndex) {
+							if (putOnStack) {
 								stack.add(new IfNode(condition, block, alternative));
 							} else {
 								currentBlock.addNode(new IfNode(condition, block, alternative));
@@ -380,9 +378,15 @@ class Decompiler {
 						} else { // WHILE
 							if (oStackSize < Lambda.count(stack)) {
 								currentBlock.addNode(stack.pop());
+                                putOnStack = true;
 							}
 							currentBlock = block.parent;
-							currentBlock.addNode(new WhileNode(condition, block));
+
+                            if (putOnStack) {
+                                stack.add(new WhileNode(condition, block));
+                            } else {
+                                currentBlock.addNode(new WhileNode(condition, block));
+                            }
 						}
 					} else {
 						handleInstruction();
