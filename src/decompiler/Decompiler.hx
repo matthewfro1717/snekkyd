@@ -261,43 +261,30 @@ class Decompiler {
 
                 currentBlock.addNode(new IndexAssignNode(target, index, value));
             case OpCode.Array:
-                final length = getInt32();
+                final arrayLength = getInt32();
                 final arrayValues:Array<Node> = [];
-                stack.add(new ArrayNode(arrayValues));
 
-                while (arrayValues.length < length) {
-                    if (instructions.get(pc) == OpCode.StoreIndex) {
-                        pc++;
-                        final value = stack.pop();
-                        stack.pop();
-                        stack.pop();
-
-                        arrayValues.push(value);
-                    } else {
-                        handleInstruction();
-                    }
+                for (_ in 0...arrayLength) {
+                    arrayValues.unshift(stack.pop());
                 }
+
+                stack.add(new ArrayNode(arrayValues));
             case OpCode.Return:
                 final returnValue = stack.pop();
 
                 currentBlock.addNode(new ReturnNode(returnValue));
             case OpCode.Hash:
-                final length = getInt32();
-                final hashValues:Map<Node, Node> = [];
-                stack.add(new HashNode(hashValues));
+                final hashLength = getInt32();
+                final hashValues:Map<Node, Node> = new Map();
 
-                while (Lambda.count(hashValues) < length) {
-                    if (instructions.get(pc) == OpCode.StoreIndex) {
-                        pc++;
-                        final value = stack.pop();
-                        final index = stack.pop();
-                        stack.pop();
+                for (_ in 0...hashLength) {
+                    final value = stack.pop();
+                    final key = stack.pop();
 
-                        hashValues.set(index, value);
-                    } else {
-                        handleInstruction();
-                    }
+                    hashValues.set(key, value);
                 }
+
+                stack.add(new HashNode(hashValues));
             case OpCode.Jump:
                 final jumpPos = getInt32();
 
