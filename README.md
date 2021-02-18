@@ -132,7 +132,8 @@ Sys.println(name);
 
 <td>
 <pre>
-mut animals = [{cool: true, name: "axolotl"}, {cool: false, name: "stork"}];
+mut animals = [{cool: true, name: "axolotl"}, 
+{cool: false, name: "stork"}];
 &nbsp;
 mut var1 = animals;
 &nbsp;
