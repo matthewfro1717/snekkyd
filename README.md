@@ -25,11 +25,11 @@ Decompiled
 <td>
 <pre>
 let fact = func(n) {
-&nbsp;&nbsp;&nbsp;&nbsp;return if n <= 1 {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1
-&nbsp;&nbsp;&nbsp;&nbsp;} else {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n * fact(n - 1)
-&nbsp;&nbsp;&nbsp;&nbsp;};
+&nbsp;&nbsp;return if n <= 1 {
+&nbsp;&nbsp;&nbsp;&nbsp;1
+&nbsp;&nbsp;} else {
+&nbsp;&nbsp;&nbsp;&nbsp;n * fact(n - 1)
+&nbsp;&nbsp;};
 };
 </pre>
 </td>
@@ -37,11 +37,11 @@ let fact = func(n) {
 <td>
 <pre>
 mut fact = func(n) {
-&nbsp;&nbsp;&nbsp;&nbsp;return if (n <= 1) {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1
-&nbsp;&nbsp;&nbsp;&nbsp;} else {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(n * fact((n - 1)))
-&nbsp;&nbsp;&nbsp;&nbsp;};
+&nbsp;&nbsp;return if (n <= 1) {
+&nbsp;&nbsp;&nbsp;&nbsp;1
+&nbsp;&nbsp;} else {
+&nbsp;&nbsp;&nbsp;&nbsp;(n * fact((n - 1)))
+&nbsp;&nbsp;};
 };
 </pre>
 </td>
@@ -63,8 +63,8 @@ for let i in 0...10 {
 mut var0 = Range.Exclusive(0, 10).Iterator();
 &nbsp;
 while var0.hasNext() {
-&nbsp;&nbsp;&nbsp;&nbsp;mut i = var0.next();
-&nbsp;&nbsp;&nbsp;&nbsp;Sys.println(i);
+&nbsp;&nbsp;mut i = var0.next();
+&nbsp;&nbsp;Sys.println(i);
 }
 </pre>
 </td>
@@ -74,12 +74,12 @@ while var0.hasNext() {
 <td>
 <pre>
 for let i in 0..100 {
-&nbsp;&nbsp;&nbsp;&nbsp;Sys.println(when {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i % 3 == 0 && i % 5 == 0 => "FizzBuzz"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i % 3 == 0 => "Fizz"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i % 5 == 0 => "Buzz"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else => i
-&nbsp;&nbsp;&nbsp;&nbsp;});
+&nbsp;&nbsp;Sys.println(when {
+&nbsp;&nbsp;&nbsp;&nbsp;i % 3 == 0 && i % 5 == 0 => "FizzBuzz"
+&nbsp;&nbsp;&nbsp;&nbsp;i % 3 == 0 => "Fizz"
+&nbsp;&nbsp;&nbsp;&nbsp;i % 5 == 0 => "Buzz"
+&nbsp;&nbsp;&nbsp;&nbsp;else => i
+&nbsp;&nbsp;});
 }
 </pre>
 </td>
@@ -89,21 +89,21 @@ for let i in 0..100 {
 mut var0 = Range.Inclusive(0, 100).Iterator();
 &nbsp;
 while var0.hasNext() {
-&nbsp;&nbsp;&nbsp;&nbsp;mut i = var0.next();
+&nbsp;&nbsp;mut i = var0.next();
 &nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;Sys.println(if (((i % 3) == 0) && ((i % 5) == 0)) {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"FizzBuzz"
+&nbsp;&nbsp;Sys.println(if (((i % 3) == 0) && ((i % 5) == 0)) {
+&nbsp;&nbsp;&nbsp;&nbsp;"FizzBuzz"
+&nbsp;&nbsp;} else {
+&nbsp;&nbsp;&nbsp;&nbsp;if ((i % 3) == 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Fizz"
 &nbsp;&nbsp;&nbsp;&nbsp;} else {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ((i % 3) == 0) {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Fizz"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ((i % 5) == 0) {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Buzz"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-&nbsp;&nbsp;&nbsp;&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ((i % 5) == 0) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Buzz"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;});
 }
 </pre>
 </td>
@@ -113,14 +113,14 @@ while var0.hasNext() {
 <td>
 <pre>
 let animals = [
-&nbsp;&nbsp;&nbsp;&nbsp;{
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name: "axolotl",
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cool: true
-&nbsp;&nbsp;&nbsp;&nbsp;},
-&nbsp;&nbsp;&nbsp;&nbsp;{
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name: "stork",
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cool: false
-&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;name: "axolotl",
+&nbsp;&nbsp;&nbsp;&nbsp;cool: true
+&nbsp;&nbsp;},
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;name: "stork",
+&nbsp;&nbsp;&nbsp;&nbsp;cool: false
+&nbsp;&nbsp;}
 ];
 &nbsp;
 let [axolotl, stork] = animals;
