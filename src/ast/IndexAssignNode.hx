@@ -16,13 +16,13 @@ class IndexAssignNode extends Node {
     }
 
     override function toString():String {
-        if (Std.is(index, StringNode)) {
+        if (index is StringNode) {
             final cIndex = cast(index, StringNode).value;
 
             if (!Keyword.isKeyword(cIndex) && ~/^[a-zA-Z]+$/.match(cIndex)) {
                 return '$target.$cIndex = $value;\r\n';
             }
-        } 
+        }
         
         return '$target[$index] = $value;\r\n';    
     }
