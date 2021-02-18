@@ -114,6 +114,8 @@ class Decompiler {
                                     final index = getInt32();
                                     final name = variableTable.resolveVariableName(index);
                                     parameters.push(new IdentNode(name));
+                                case OpCode.Return if (jumpIndex - pc == 1 && Lambda.count(stack) <= oStackSize): // Skip last return of function
+                                    pc++;
                                 case OpCode.Return if (Lambda.count(stack) <= oStackSize):
                                     stack.add(new NullNode());
                                     handleInstruction();
