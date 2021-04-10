@@ -23,7 +23,7 @@ class VariableTable {
             }
         }
 
-        return 'var$index';
+        return "$" + 'var$index';
     }
 
     public function toByteCode():Bytes {
