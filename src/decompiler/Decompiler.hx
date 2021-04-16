@@ -2,8 +2,10 @@ package decompiler;
 
 import haxe.ds.StringMap;
 import haxe.io.Path;
+#if target.sys
 import sys.io.File;
 import sys.FileSystem;
+#end
 import std.BuiltInTable;
 import object.Object;
 import ast.*;
@@ -51,6 +53,7 @@ class Decompiler {
         instructions = byteCode.read(byteCode.readInt32());
     }
 
+    #if target.sys
     public function decompile(outDir:String) {
         var lastFileName:String = fileNameTable.resolve(pc);
 
@@ -75,6 +78,11 @@ class Decompiler {
             FileSystem.createDirectory('$outDir/${Path.directory(fileName)}');
             File.saveContent('$outDir/$fileName', content.toString());
         }
+    }
+    #end
+
+    public function decompileToString():String {
+        return currentBlock.toString();
     }
 
     function getInt32():Int {

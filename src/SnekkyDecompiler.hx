@@ -1,12 +1,20 @@
-import sys.io.File;
+import haxe.io.Bytes;
 import decompiler.Decompiler;
 
+@:expose
 class SnekkyDecompiler {
 
+    public function decompileBytes(code:Bytes):String {
+        final decompiler = new Decompiler(code);
+        return decompiler.decompileToString();
+    }
+
     public static function main() {
-        final code = File.getBytes(Sys.args()[0]);
+        #if target.sys
+        final code = sys.io.File.getBytes(Sys.args()[0]);
         final outDir = Sys.args()[1];
         final decompiler = new Decompiler(code);
-        decompiler.decompile(outDir);   
+        decompiler.decompile(outDir);
+        #end
     }
 }
