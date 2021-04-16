@@ -4,7 +4,7 @@ import decompiler.Decompiler;
 @:expose
 class SnekkyDecompiler {
 
-    public function decompileBytes(code:Bytes):String {
+    public static function decompileBytes(code:Bytes):String {
         final decompiler = new Decompiler(code);
         return decompiler.decompileToString();
     }
