@@ -1,5 +1,6 @@
 cpp/
 out/
+js/
 input.bite
 input.snek
 decompiled.snek
