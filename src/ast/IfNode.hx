@@ -19,7 +19,15 @@ class IfNode extends Node {
         s.add(consequence.toString());
         if (alternative.body.length > 0) {
             s.add(" else ");
-            s.add(alternative.toString());
+            if (alternative.body.length == 1 && alternative.body[0] is IfNode) {
+                final cIf = cast(alternative.body[0], IfNode);
+                cIf.alternative.indentWidth = alternative.indentWidth;
+                cIf.consequence.indentWidth = alternative.indentWidth;
+                alternative.indentWidth--;
+                s.add(cIf.toString());
+            } else {
+                s.add(alternative.toString());
+            }
         };
 
         return s.toString();

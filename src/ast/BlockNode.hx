@@ -9,8 +9,14 @@ class BlockNode extends Node {
     public function new(parent:BlockNode) {
         this.parent = parent;
 
-        if (parent != null) {
-            indentWidth = parent.indentWidth + 1;
+        indentWidth = getIndentWidth();
+    }
+
+    function getIndentWidth() {
+        return if (parent != null) {
+            parent.indentWidth + 1;
+        } else {
+            indentWidth;
         }
     }
 
@@ -25,16 +31,16 @@ class BlockNode extends Node {
     override public function toString():String {
         final s = new StringBuf();
 
-        if (indentWidth > 0) {
+        if (getIndentWidth() > 0) {
             s.add("{\r\n");
         }
         for (node in body) {
-            s.add(repeatString(indentWidth, "    "));
+            s.add(repeatString(getIndentWidth(), "    "));
             s.add(node.toString());
             s.add("\r\n");
         }
-        s.add(repeatString(indentWidth - 1, "    "));
-        if (indentWidth > 0) {
+        s.add(repeatString(getIndentWidth() - 1, "    "));
+        if (getIndentWidth() > 0) {
             s.add("}");
         }
 
