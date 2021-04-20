@@ -1,11 +1,9 @@
 package ast.operators;
 
-class BitNotNode extends Node {
-
-    public final right:Node;
+class BitNotNode extends OperatorNode {
 
     public function new(right:Node) {
-        this.right = right;
+        super(null, right, "~");
     }
 
     override public function toString():String {

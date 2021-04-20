@@ -6,6 +6,7 @@ class SnekkyDecompiler {
 
     public static function decompileBytes(code:Bytes):String {
         final decompiler = new Decompiler(code);
+        decompiler.decompile();
         return decompiler.decompileToString();
     }
 
@@ -14,7 +15,8 @@ class SnekkyDecompiler {
         final code = sys.io.File.getBytes(Sys.args()[0]);
         final outDir = Sys.args()[1];
         final decompiler = new Decompiler(code);
-        decompiler.decompile(outDir);
+        decompiler.decompile();
+        decompiler.save(outDir);
         #end
     }
 }

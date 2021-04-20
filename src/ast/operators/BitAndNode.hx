@@ -1,13 +1,9 @@
 package ast.operators;
 
-class BitAndNode extends Node {
-
-    public final left:Node;
-    public final right:Node;
+class BitAndNode extends OperatorNode {
 
     public function new(left:Node, right:Node) {
-        this.left = left;
-        this.right = right;
+        super(left, right, "&");
     }
 
     override public function toString():String {

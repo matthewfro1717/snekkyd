@@ -1,13 +1,9 @@
 package ast.operators;
 
-class DivideNode extends Node {
-
-    public final left:Node;
-    public final right:Node;
+class DivideNode extends OperatorNode {
 
     public function new(left:Node, right:Node) {
-        this.left = left;
-        this.right = right;
+        super(left, right, "/");
     }
 
     override public function toString():String {

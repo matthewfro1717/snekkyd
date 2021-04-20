@@ -53,8 +53,7 @@ class Decompiler {
         instructions = byteCode.read(byteCode.readInt32());
     }
 
-    #if target.sys
-    public function decompile(outDir:String) {
+    public function decompile() {
         var lastFileName:String = fileNameTable.resolve(pc);
 
         while (pc < instructions.length) {
@@ -73,7 +72,10 @@ class Decompiler {
 
             handleInstruction();
         }
+    }
 
+    #if target.sys
+    public function save(outDir:String) {
         for (fileName => content in blocks) {
             FileSystem.createDirectory('$outDir/${Path.directory(fileName)}');
             File.saveContent('$outDir/$fileName', content.toString());
@@ -82,6 +84,9 @@ class Decompiler {
     #end
 
     public function decompileToString():String {
+        while (pc < instructions.length) {
+            handleInstruction();
+        }
         return currentBlock.toString();
     }
 
