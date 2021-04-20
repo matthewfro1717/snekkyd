@@ -4,6 +4,7 @@ class VariableNode extends Node {
 
     public final name:String;
     public final value:Node;
+    public var mutable = false;
 
     public function new(name:String, value:Node) {
         this.name = name;
@@ -11,6 +12,10 @@ class VariableNode extends Node {
     }
 
     override function toString():String {
-        return 'mut $name = $value;\r\n';
+        return if (mutable) {
+            'mut $name = $value;\r\n';
+        } else {
+            'let $name = $value;\r\n';
+        }
     }
 }

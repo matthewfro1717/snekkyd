@@ -1,5 +1,6 @@
 package decompiler;
 
+import haxe.ds.IntMap;
 import haxe.ds.StringMap;
 import haxe.io.Path;
 #if target.sys
@@ -38,6 +39,7 @@ class Decompiler {
     final stack:GenericStack<Node> = new GenericStack();
     final functions:Map<Int, FunctionNode> = new Map();
     final declaredVariables:Array<Int> = [];
+    final variableNodes:IntMap<VariableNode> = new IntMap();
 
     public function new(fileData:Bytes) {
         final fileData = new BytesInput(fileData);
@@ -240,8 +242,11 @@ class Decompiler {
 
                 if (!declaredVariables.contains(index)) {
                     declaredVariables.push(index);
-                    currentBlock.addNode(new VariableNode(name, expression));
+                    final node = new VariableNode(name, expression);
+                    variableNodes.set(index, node);
+                    currentBlock.addNode(node);
                 } else {
+                    variableNodes.get(index).mutable = true;
                     currentBlock.addNode(new VariableAssignNode(name, expression));
                 }
             case OpCode.Load:
