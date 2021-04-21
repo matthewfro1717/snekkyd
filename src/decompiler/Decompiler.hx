@@ -285,7 +285,7 @@ class Decompiler {
                 final arrayValues:Array<Node> = [];
 
                 for (_ in 0...arrayLength) {
-                    arrayValues.unshift(stack.pop());
+                    arrayValues.push(stack.pop());
                 }
 
                 stack.add(new ArrayNode(arrayValues));
