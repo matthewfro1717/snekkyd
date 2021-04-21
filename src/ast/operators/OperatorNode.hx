@@ -23,18 +23,32 @@ class OperatorNode extends Node {
     }
 
     override function toString():String {
+        final buff = new StringBuf();
+
+        if (left is OperatorNode) {
+            final cLeft = cast(left, OperatorNode);
+            if (cLeft.precedence > precedence) {
+                buff.add('($left)');
+            } else {
+                buff.add(left.toString());
+            }
+        } else {
+            buff.add(left.toString());
+        }
+
+        buff.add(' $symbol ');
+
         if (right is OperatorNode) {
             final cRight = cast(right, OperatorNode);
             if (cRight.precedence > precedence) {
-                return '$left $symbol ($right)';
+                buff.add('($right)');
+            } else {
+                buff.add(right.toString());
             }
-        } else if (left is OperatorNode) {
-            final cLeft = cast(left, OperatorNode);
-            if (cLeft.precedence > precedence) {
-                return '($left) $symbol $right';
-            }
+        } else {
+            buff.add(right.toString());
         }
 
-        return '$left $symbol $right';
+        return buff.toString();
     }
 }
