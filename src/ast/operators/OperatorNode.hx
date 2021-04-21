@@ -25,12 +25,12 @@ class OperatorNode extends Node {
     override function toString():String {
         if (right is OperatorNode) {
             final cRight = cast(right, OperatorNode);
-            if (cRight.precedence >= precedence) {
+            if (cRight.precedence > precedence) {
                 return '$left $symbol ($right)';
             }
         } else if (left is OperatorNode) {
             final cLeft = cast(left, OperatorNode);
-            if (cLeft.precedence >= precedence) {
+            if (cLeft.precedence > precedence) {
                 return '($left) $symbol $right';
             }
         }
