@@ -3,10 +3,14 @@ package ast.operators;
 class BitNotNode extends OperatorNode {
 
     public function new(right:Node) {
-        super(null, right, "~");
+        super(null, right, "~", Right, 3);
     }
 
     override public function toString():String {
-        return '(~$right)';
+        return if (right is OperatorNode) {
+            '~($right)';
+        } else {
+            '~$right';
+        }
     }
 }
