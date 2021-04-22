@@ -40,7 +40,7 @@ class OperatorNode extends Node {
 
         if (right is OperatorNode) {
             final cRight = cast(right, OperatorNode);
-            if (cRight.precedence > precedence) {
+            if (cRight.precedence >= precedence) {
                 buff.add('($right)');
             } else {
                 buff.add(right.toString());
