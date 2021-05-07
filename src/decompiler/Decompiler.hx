@@ -86,10 +86,16 @@ class Decompiler {
     #end
 
     public function decompileToString():String {
-        while (pc < instructions.length) {
-            handleInstruction();
-        }
         return currentBlock.toString();
+    }
+
+    public function decompileToMap():StringMap<String> {
+        final files:StringMap<String> = new StringMap();
+        for (fileName => content in blocks) {
+            files.set(fileName, content.toString());
+        }
+
+        return files;
     }
 
     function getInt32():Int {
@@ -129,6 +135,11 @@ class Decompiler {
                                     final index = getInt32();
                                     final name = variableTable.resolveVariableName(index);
                                     parameters.push(new IdentNode(name));
+                    
+                                    if (!declaredVariables.contains(index)) {
+                                        declaredVariables.push(index);
+                                        variableNodes.set(index, null);
+                                    }
                                 case OpCode.Return if (jumpIndex - pc == 1 && Lambda.count(stack) <= oStackSize): // Skip last return of function
                                     pc++;
                                 case OpCode.Return if (Lambda.count(stack) <= oStackSize):

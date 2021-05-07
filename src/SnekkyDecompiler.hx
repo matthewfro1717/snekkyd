@@ -1,3 +1,6 @@
+import haxe.crypto.Base64;
+import ast.BlockNode;
+import haxe.ds.StringMap;
 import haxe.io.Bytes;
 import decompiler.Decompiler;
 
@@ -8,6 +11,12 @@ class SnekkyDecompiler {
         final decompiler = new Decompiler(code);
         decompiler.decompile();
         return decompiler.decompileToString();
+    }
+
+    public static function decompileBase64(code:String):StringMap<String> {
+        final decompiler = new Decompiler(Base64.decode(code));
+        decompiler.decompile();
+        return decompiler.decompileToMap();
     }
 
     public static function main() {
