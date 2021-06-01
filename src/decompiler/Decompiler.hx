@@ -1,5 +1,6 @@
 package decompiler;
 
+import ast.datatypes.FunctionNode.ParameterNode;
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
 import haxe.io.Path;
@@ -127,18 +128,19 @@ class Decompiler {
                         final body = new BlockNode(currentBlock);
                         currentBlock = body;
 
-                        final parameters:Array<Node> = [];
+                        final parameters:Array<ParameterNode> = [];
                         while (pc < jumpIndex) {
                             switch (instructions.get(pc)) {
                                 case OpCode.Store if (parameters.length < parametersCount):
                                     pc++;
                                     final index = getInt32();
                                     final name = variableTable.resolveVariableName(index);
-                                    parameters.push(new IdentNode(name));
+                                    final parameterNode = new ParameterNode(name);
+                                    parameters.push(parameterNode);
                     
                                     if (!declaredVariables.contains(index)) {
                                         declaredVariables.push(index);
-                                        variableNodes.set(index, null);
+                                        variableNodes.set(index, parameterNode);
                                     }
                                 case OpCode.Return if (jumpIndex - pc == 1 && Lambda.count(stack) <= oStackSize): // Skip last return of function
                                     pc++;

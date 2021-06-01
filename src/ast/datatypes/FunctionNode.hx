@@ -2,12 +2,30 @@ package ast.datatypes;
 
 import haxe.iterators.ArrayIterator;
 
+class ParameterNode extends VariableNode {
+
+    public function new(name:String) {
+        super(name, null);
+    }
+
+    override function toString():String {
+        final buf = new StringBuf();
+
+        if (mutable) {
+            buf.add("mut ");
+        }
+        buf.add(name);
+
+        return buf.toString();
+    }
+}
+
 class FunctionNode extends Node {
 
     public final body:BlockNode;
-    public final parameters:Array<Node>;
+    public final parameters:Array<ParameterNode>;
 
-    public function new(body:BlockNode, parameters:Array<Node>) {
+    public function new(body:BlockNode, parameters:Array<ParameterNode>) {
         this.body = body;
         this.parameters = parameters;
     }
