@@ -5,6 +5,8 @@ A tool which can be used to decompile Snekky bytecode files (`.bite` extension).
 ## Installation
 Download the latest version for your operating system of choice from the [releases page](https://github.com/snekkylang/decompiler/releases) or the latest build from the [actions tab](https://github.com/snekkylang/decompiler/actions).
 
+**Alternative**: Use the [GUI frontend](https://github.com/snekkylang/snekkyd-gui).
+
 ## Usage
 ```
 snekkyd <input> <out_folder>
