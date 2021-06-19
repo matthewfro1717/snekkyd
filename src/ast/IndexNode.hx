@@ -1,6 +1,7 @@
 package ast;
 
 import ast.datatypes.NumberNode;
+import ast.operators.OperatorNode;
 import code.Keyword;
 import ast.datatypes.StringNode;
 
@@ -19,7 +20,7 @@ class IndexNode extends Node {
             final cIndex = cast(index, StringNode).value;
 
             if (!Keyword.isKeyword(cIndex) && ~/^[a-zA-Z]+$/.match(cIndex)) {
-                return if (target is NumberNode) {
+                return if (target is NumberNode || target is OperatorNode) {
                     '($target).$cIndex';
                 } else {
                     '$target.$cIndex';
