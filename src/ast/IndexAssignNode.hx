@@ -1,5 +1,6 @@
 package ast;
 
+import ast.datatypes.NumberNode;
 import code.Keyword;
 import ast.datatypes.StringNode;
 
@@ -20,7 +21,11 @@ class IndexAssignNode extends Node {
             final cIndex = cast(index, StringNode).value;
 
             if (!Keyword.isKeyword(cIndex) && ~/^[a-zA-Z]+$/.match(cIndex)) {
-                return '$target.$cIndex = $value;\r\n';
+                return if (target is NumberNode) {
+                    '($target).$cIndex = $value;\r\n'; 
+                } else {
+                    '$target.$cIndex = $value;\r\n';    
+                }
             }
         }
         
