@@ -7,15 +7,10 @@ class NotNode extends OperatorNode {
     }
 
     override function toString():String {
-        return if (right is EqualsNode) {
-            final cRight = cast(right, EqualsNode);
-            '${cRight.left} != ${cRight.right}';
+        return if (right is OperatorNode) {
+            '!($right)';
         } else {
-            if (right is OperatorNode) {
-                '!($right)';
-            } else {
-                '!$right';
-            }
+            '!$right';
         }
     }
 }

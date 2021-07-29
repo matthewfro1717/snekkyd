@@ -238,7 +238,12 @@ class Decompiler {
                 final right = stack.pop();
                 final left = stack.pop();
 
-                stack.add(new EqualsNode(left, right));
+                if (instructions.get(pc) == OpCode.Not) {
+                    pc++;
+                    stack.add(new NotEqualsNode(left, right));
+                } else {
+                    stack.add(new EqualsNode(left, right));
+                }
             case OpCode.Negate:
                 final right = stack.pop();
 
