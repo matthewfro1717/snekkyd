@@ -26,7 +26,7 @@ class FileNameTable {
             }
         }
 
-        return prev == null ? null : prev.fileName;
+        return prev == null ? "unknown.snek" : prev.fileName;
     }
 
     public function fromByteCode(byteCode:BytesInput):FileNameTable {
