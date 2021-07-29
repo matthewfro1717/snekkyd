@@ -10,10 +10,6 @@ class FileNameTable {
 
     public function new() {}
 
-    public function define(start:Int, end:Int, fileName:String) {
-        table.push({start: start, end: end, fileName: fileName});
-    }
-
     public function resolve(byteIndex:Int):String {
         var prev:FileNameEntry = null;
 

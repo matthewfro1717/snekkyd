@@ -11,11 +11,7 @@ class VariableTable {
     final table:Array<VariableEntry> = [];
 
     public function new() {}
-
-    public function define(index: Int, start:Int, end:Int, name:String) {
-        table.push({index: index, start: start, end: end, name: name});
-    }
-
+    
     public function resolveVariableName(index:Int):String {
         for (entry in table) {
             if (entry.index == index) {

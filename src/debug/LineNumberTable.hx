@@ -10,10 +10,6 @@ class LineNumberTable {
 
     public function new() {}
 
-    public function define(byteIndex:Int, sourcePosition:{line:Int, linePos:Int}) {
-        table.set(byteIndex, sourcePosition);
-    }
-
     public function resolve(byteIndex:Int):Position {
         if (byteIndex < 0) {
             return null;
