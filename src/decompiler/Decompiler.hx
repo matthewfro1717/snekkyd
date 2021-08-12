@@ -39,7 +39,6 @@ class Decompiler {
 
     final stack:GenericStack<Node> = new GenericStack();
     final functions:Map<Int, FunctionNode> = new Map();
-    final declaredVariables:Array<Int> = [];
     final variableNodes:IntMap<VariableNode> = new IntMap();
 
     public function new(fileData:Bytes) {
@@ -138,8 +137,7 @@ class Decompiler {
                                     final parameterNode = new ParameterNode(name);
                                     parameters.push(parameterNode);
                     
-                                    if (!declaredVariables.contains(index)) {
-                                        declaredVariables.push(index);
+                                    if (!variableNodes.exists(index)) {
                                         variableNodes.set(index, parameterNode);
                                     }
                                 case OpCode.Return if (jumpIndex - pc == 1 && Lambda.count(stack) <= oStackSize): // Skip last return of function
@@ -258,8 +256,7 @@ class Decompiler {
                 final expression = stack.pop();
                 final name = variableTable.resolveVariableName(index);
 
-                if (!declaredVariables.contains(index)) {
-                    declaredVariables.push(index);
+                if (!variableNodes.exists(index)) {
                     final node = new VariableNode(name, expression);
                     variableNodes.set(index, node);
                     currentBlock.addNode(node);
