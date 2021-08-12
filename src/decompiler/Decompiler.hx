@@ -236,7 +236,8 @@ class Decompiler {
                 final right = stack.pop();
                 final left = stack.pop();
 
-                if (instructions.get(pc) == OpCode.Not) {
+                if (instructions.get(pc) == OpCode.Not && instructions.get(pc + 1) != OpCode.JumpPeek) {
+                //                                        ^ Explanation: Fixes 1 == 2 && false;
                     pc++;
                     stack.add(new NotEqualsNode(left, right));
                 } else {
