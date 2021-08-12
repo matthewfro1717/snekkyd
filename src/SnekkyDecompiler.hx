@@ -1,6 +1,5 @@
 import haxe.io.Path;
 import haxe.crypto.Base64;
-import ast.BlockNode;
 import haxe.ds.StringMap;
 import haxe.io.Bytes;
 import decompiler.Decompiler;
