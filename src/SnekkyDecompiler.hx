@@ -1,3 +1,4 @@
+import haxe.io.Path;
 import haxe.crypto.Base64;
 import ast.BlockNode;
 import haxe.ds.StringMap;
@@ -21,8 +22,13 @@ class SnekkyDecompiler {
 
     public static function main() {
         #if target.sys
-        final code = sys.io.File.getBytes(Sys.args()[0]);
-        final outDir = Sys.args()[1];
+        final fileName = Sys.args()[0];
+
+        final code = sys.io.File.getBytes(fileName);
+        var outDir = Sys.args()[1];
+        if (outDir == null) {
+            outDir = Path.withoutExtension(Path.withoutDirectory(fileName));
+        }
         final decompiler = new Decompiler(code);
         decompiler.decompile();
         decompiler.save(outDir);
