@@ -319,48 +319,13 @@ class Decompiler {
 
                 stack.add(new HashNode(hashValues));
             case OpCode.Jump:
-                final startPc = pc - 1;
-                final jumpIndex = getInt32();
+                final jumpPos = getInt32();
 
-                final block = new BlockNode(currentBlock);
-                currentBlock = block;
-
-                while (pc < jumpIndex) {
-                    if (instructions.get(pc) == OpCode.Jump) {
-                        pc++;
-                        final jumpIndex = getInt32();
-
-                        if (jumpIndex < pc) {
-                            currentBlock.addNode(new ContinueNode());
-                        } else {
-                            currentBlock.addNode(new BreakNode());
-                        }
-                    } else {
-                        handleInstruction();
-                    }
+                if (jumpPos < pc) {
+                    currentBlock.addNode(new ContinueNode());
+                } else {
+                    currentBlock.addNode(new BreakNode());
                 }
-
-                currentBlock = block.parent;
-
-                while (true) {
-                    if (instructions.get(pc) == OpCode.JumpTrue) {
-                        final backJumpIndex = instructions.get(pc + 1);
-
-                        if (backJumpIndex == startPc + 5) {
-                            pc += 5;
-                            break;
-                        } else {
-                            trace(backJumpIndex, startPc + 5);
-                        }
-                    }
-
-
-                    handleInstruction();
-                }
-
-                final condition = stack.pop();
-
-                currentBlock.addNode(new WhileNode(condition, block));
             case OpCode.Not:
                 final right = stack.pop();
                 stack.add(new NotNode(right));   
