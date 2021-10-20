@@ -110,8 +110,6 @@ class Decompiler {
         pc++;
 
         switch (opCode) {
-            case OpCode.Duplicate:
-                stack.add(stack.first());
             case OpCode.Constant:
                 final constantIndex = getInt32();
                 final constant = switch (constantPool[constantIndex]) {
@@ -236,13 +234,12 @@ class Decompiler {
                 final right = stack.pop();
                 final left = stack.pop();
 
-                if (instructions.get(pc) == OpCode.Not && instructions.get(pc + 1) != OpCode.JumpPeek) {
-                //                                        ^ Explanation: Fixes 1 == 2 && false;
-                    pc++;
-                    stack.add(new NotEqualsNode(left, right));
-                } else {
-                    stack.add(new EqualsNode(left, right));
-                }
+                stack.add(new EqualsNode(left, right));
+            case OpCode.NotEquals:
+                final right = stack.pop();
+                final left = stack.pop();
+
+                stack.add(new NotEqualsNode(left, right));     
             case OpCode.Negate:
                 final right = stack.pop();
 
@@ -322,97 +319,129 @@ class Decompiler {
 
                 stack.add(new HashNode(hashValues));
             case OpCode.Jump:
-                final jumpPos = getInt32();
-
-                if (jumpPos < pc) {
-                    currentBlock.addNode(new ContinueNode());
-                } else {
-                    currentBlock.addNode(new BreakNode());
-                }
-            case OpCode.JumpPeek: // OR
+                final startPc = pc - 1;
                 final jumpIndex = getInt32();
-                pc++;
-                while (pc != jumpIndex) {
-                    handleInstruction();
-                }
-                final right = stack.pop();
-                final left = stack.pop();
-
-                stack.add(new OrNode(left, right));
-            case OpCode.Not: // AND
-                if (instructions.get(pc) == OpCode.JumpPeek) {
-                    pc++;
-                    final jumpIndex = getInt32();
-                    pc++;
-                    while (pc != jumpIndex - 5) {
-                        handleInstruction();
-                    }
-                    pc += 6;
-
-                    final right = stack.pop();
-                    final left = stack.pop();
-
-                    stack.add(new AndNode(left, right));
-                } else {
-                    final right = stack.pop();
-                    stack.add(new NotNode(right));
-                }
-            case OpCode.JumpNot:
-                final jumpIndex = getInt32();
-                final condition = stack.pop();
 
                 final block = new BlockNode(currentBlock);
-                final oStackSize = Lambda.count(stack);
-                var putOnStack = false;
-
                 currentBlock = block;
+
                 while (pc < jumpIndex) {
-                    if (jumpIndex - pc == 5 && instructions.get(pc) == OpCode.Jump) {
+                    if (instructions.get(pc) == OpCode.Jump) {
                         pc++;
                         final jumpIndex = getInt32();
 
-                        if (jumpIndex >= pc) { // IF
-                            if (oStackSize < Lambda.count(stack)) {
-                                currentBlock.addNode(stack.pop());
-                                putOnStack = true;
-                            }
-
-                            final oBlock = currentBlock;
-                            final alternative = new BlockNode(currentBlock.parent);
-                            currentBlock = alternative;
-
-                            while (pc < jumpIndex) {
-                                handleInstruction();
-                            }
-
-                            if (oStackSize < Lambda.count(stack)) {
-                                currentBlock.addNode(stack.pop());
-                                putOnStack = true;
-                            }
-
-                            currentBlock = oBlock;
-                            currentBlock = block.parent;
-
-                            if (putOnStack) {
-                                stack.add(new IfNode(condition, block, alternative));
-                            } else {
-                                currentBlock.addNode(new IfNode(condition, block, alternative));
-                            }
-                        } else { // WHILE
-                            if (oStackSize < Lambda.count(stack)) {
-                                currentBlock.addNode(stack.pop());
-                                putOnStack = true;
-                            }
-                            currentBlock = block.parent;
-
-                            if (putOnStack) {
-                                stack.add(new WhileNode(condition, block));
-                            } else {
-                                currentBlock.addNode(new WhileNode(condition, block));
-                            }
+                        if (jumpIndex < pc) {
+                            currentBlock.addNode(new ContinueNode());
+                        } else {
+                            currentBlock.addNode(new BreakNode());
                         }
                     } else {
                         handleInstruction();
+                    }
+                }
+
+                currentBlock = block.parent;
+
+                while (true) {
+                    if (instructions.get(pc) == OpCode.JumpTrue) {
+                        final backJumpIndex = instructions.get(pc + 1);
+
+                        if (backJumpIndex == startPc + 5) {
+                            pc += 5;
+                            break;
+                        } else {
+                            trace(backJumpIndex, startPc + 5);
+                        }
+                    }
+
+
+                    handleInstruction();
+                }
+
+                final condition = stack.pop();
+
+                currentBlock.addNode(new WhileNode(condition, block));
+            case OpCode.Not:
+                final right = stack.pop();
+                stack.add(new NotNode(right));   
+            case OpCode.JumpTrue:
+                final jumpIndex = getInt32();
+                while (pc != jumpIndex - 5) {
+                    handleInstruction();
+                }
+                pc += 10;
+                final right = stack.pop();
+                final left = stack.pop();
+                
+                stack.add(new OrNode(left, right));
+            case OpCode.JumpFalse:
+                final jumpIndex = getInt32();
+
+                if (instructions.get(jumpIndex) == OpCode.Constant && constantPool[instructions.getInt32(jumpIndex + 1)].match(Boolean(false))) {
+                    while (pc != jumpIndex - 5) {
+                        handleInstruction();
+                    }
+                    pc += 10;
+                    final right = stack.pop();
+                    final left = stack.pop();
+                    
+                    stack.add(new AndNode(left, right));   
+                } else {
+                    final condition = stack.pop();
+
+                    final block = new BlockNode(currentBlock);
+                    final oStackSize = Lambda.count(stack);
+                    var putOnStack = false;
+    
+                    currentBlock = block;
+                    while (pc < jumpIndex) {
+                        if (jumpIndex - pc == 5 && instructions.get(pc) == OpCode.Jump) {
+                            pc++;
+                            final jumpIndex = getInt32();
+    
+                            if (jumpIndex >= pc) { // IF
+                                if (oStackSize < Lambda.count(stack)) {
+                                    currentBlock.addNode(stack.pop());
+                                    putOnStack = true;
+                                }
+    
+                                final oBlock = currentBlock;
+                                final alternative = new BlockNode(currentBlock.parent);
+                                currentBlock = alternative;
+    
+                                while (pc < jumpIndex) {
+                                    handleInstruction();
+                                }
+    
+                                if (oStackSize < Lambda.count(stack)) {
+                                    currentBlock.addNode(stack.pop());
+                                    putOnStack = true;
+                                }
+    
+                                currentBlock = oBlock;
+                                currentBlock = block.parent;
+    
+                                if (putOnStack) {
+                                    stack.add(new IfNode(condition, block, alternative));
+                                } else {
+                                    currentBlock.addNode(new IfNode(condition, block, alternative));
+                                }
+                            } else { // WHILE
+                                if (oStackSize < Lambda.count(stack)) {
+                                    currentBlock.addNode(stack.pop());
+                                    putOnStack = true;
+                                }
+                                currentBlock = block.parent;
+    
+                                if (putOnStack) {
+                                    stack.add(new WhileNode(condition, block));
+                                } else {
+                                    currentBlock.addNode(new WhileNode(condition, block));
+                                }
+                            }
+                        } else {
+                            handleInstruction();
+                        }
                     }
                 }
         }
