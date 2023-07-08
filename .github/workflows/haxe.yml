@@ -1,5 +1,5 @@
 name: snekky
- 
+
 on: [push]
 
 jobs:
